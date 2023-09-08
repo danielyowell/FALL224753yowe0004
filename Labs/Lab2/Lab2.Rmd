@@ -1,0 +1,133 @@
+---
+title: "Lab2"
+author: "Daniel Yowell"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Task 1
+
+Get the working directory
+
+```{r}
+getwd()
+```
+
+# Task 2
+
+Read EPAGAS into data frame
+
+```{r}
+data <- read.csv("EPAGAS.csv")
+head(data)
+```
+
+# Task 3
+
+Make the object mpg, the number of miles per gallon vector.
+
+```{r}
+mpg <- data$MPG
+```
+
+If $z_i=\frac{(x_i-\bar{x})}{s_x}$, then $\bar{z} = 0$ and $s_z^2 = 1$. 
+Transform the mpg variable to z and verify these results.
+
+```{r}
+# Subtract mean from mpg, then divide by standard deviation
+z=(mpg-mean(mpg))/sd(mpg)
+print(z)
+# The mean of z is extremely close to zero
+print(mean(z))
+# The square of the standard deviation of z is 1
+print(sd(z)^2)
+```
+
+Using z, find the values of mpg that are possible outliers.
+
+```{r}
+z[abs(z)>=2 & abs(z)<=3]
+```
+
+Using z, find the values of mpg that are defined as outliers.
+
+```{r}
+z[abs(z)>3]
+```
+
+Using the lattice package, construct a dotplot.
+(red = outlier, blue = possible outlier)
+
+```{r}
+# outliers = red, possible outliers = blue, rest = black
+mycol = ifelse(abs(z)>3, "Red",
+        ifelse(abs(z)>=2 &abs(z)<=3,"Blue", "Black"))  
+
+library(lattice)
+dp <- dotplot(mpg,col=mycol, main="Daniel Yowell's MPG Dotplot") 
+print(dp)
+```
+
+# Task 4
+
+Make a boxplot of the mpg variable.
+
+```{r}
+boxplot(data$MPG, main="Daniel Yowell's MPG Boxplot", ylab="MPG", horizontal=TRUE, col="black", notch = TRUE)
+
+# Median value
+median_val <- median(data$MPG)
+
+# Add the median line
+abline(h = median_val)
+```
+
+Q: Using Chebyshev’s theorem predict the proportion of data within 2 standard deviations of the mean of the mpg data.
+
+  A: Chebyshev's theorem says that at least 75% of the data lies within 2 standard deviations of the mean.
+
+Use R to calculate the exact proportion within 2 standard deviation of the mean.
+
+
+```{r}
+mean_mpg <- mean(mpg)
+print(mean_mpg)
+sd2 <- sd(mpg) * 2
+print(sd2)
+
+upperbound <- mean_mpg + sd2
+lowerbound <- mean_mpg - sd2
+
+subset <- mpg[mpg > lowerbound  & mpg < upperbound]
+print(length(subset) / length(mpg))
+```
+
+Q: Does Chebyshev agree with the data?
+
+  A: We have shown that 96% of the data lies within 2 standard deviations of the mean. Thus, Chebyshev agrees with the data.
+
+Q: Now use the Empirical rule. What proportion (according to the rule) of the data should be within 2 standard deviations of the mean?
+
+  A: The Empirical rule says that 95% of the data should be within 2 standard deviations of the mean.
+
+Q: How well does it correspond?
+
+  A: It's a close call, but the 96% we found earlier is indeed greater than 95%. Thus, the Empirical rule holds up.
+
+Q: Is the Empirical rule valid in this case? Why?
+
+  A: It is acceptable to use the Empirical rule here, since our data forms the shape of a single mound (as shown in the histogram below).
+
+```{r}
+hist(mpg, 
+     main = "Daniel Yowell's MPG Histogram", 
+     xlab = "mpg", 
+     ylab = "frequency")
+```

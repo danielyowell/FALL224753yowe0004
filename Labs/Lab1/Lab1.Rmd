@@ -1,0 +1,194 @@
+---
+title: "Lab 1"
+author: "Daniel Yowell"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Tasks
+
+This is Lab 1
+
+## Task 1
+
+We need the working directory
+
+```{r}
+getwd()
+```
+
+## Task 2
+
+Read in the DDT data
+
+```{r}
+ddt <- read.csv("DDT.csv")
+head(ddt)
+```
+
+## Task 3
+
+Qualitative variables: RIVER, SPECIES
+Quantitative variables: MILE, LENGTH, WEIGHT, DDT
+Number of Species: 3
+
+Subset 1:
+```{r}
+library(dplyr)
+subset1 <- ddt %>% filter(SPECIES == 'LMBASS' & WEIGHT > 800)
+subset1
+```
+
+Subset 2:
+```{r}
+subset2 <- ddt %>% filter(RIVER == 'SCM' & DDT > 4.0)
+subset2
+```
+
+## Task 4
+
+Q.1 Find the mean length of fish in the ddt data frame.
+```{r}
+mean_length <- mean(ddt$LENGTH)
+mean_length
+```
+
+Q.2 What is the standard deviation of the weight of fish in the ddt data frame?
+```{r}
+sd_weight <- sd(ddt$WEIGHT)
+sd_weight
+```
+
+Q.3 Is this the plot of LENGTH vs WEIGHT from the ddt data frame?
+```{r ddt}
+plot(ddt$LENGTH, ddt$WEIGHT, main="Daniel Yowell's Scatter Plot", xlab="WEIGHT", ylab="LENGTH", col="red")
+```
+1
+
+Q.4 If v=1:20 what is the last value of v/20?
+```{r}
+v=1:20
+v/20
+```
+The last value is 1.00
+
+## Task 5
+
+Make a table of the rivers.
+```{r}
+summary_table <- ddt %>% group_by(RIVER) %>% summarize(Count = n(),)
+summary_table
+```
+
+Make a color-coded barplot of the rivers.
+```{r}
+library(ggplot2)
+ggplot(ddt, aes(x = RIVER, fill = RIVER)) +
+  geom_bar() +
+  labs(title = "Daniel Yowell's Color-Coded Barplot",
+       x = "River name",
+       y = "Count") +
+  theme_minimal()
+```
+
+Make a table of the rivers crossed with the species of fish.
+```{r}
+cross_table1 <- table(ddt$RIVER, ddt$SPECIES)
+print(cross_table1)
+```
+
+Make a barplot of the rivers crossed with the species of fish.
+```{r}
+cross_table2 <- table(ddt$RIVER, ddt$SPECIES)
+bar_plot_colors <- c("red", "green", "blue", "purple")
+barplot(cross_table2, beside = TRUE, legend = rownames(cross_table2), col = bar_plot_colors)
+```
+
+## Task 6
+
+Make a pie chart of Fish SPECIES
+```{r}
+# first count the # of species, then plot that
+library(dplyr)
+summary_table <- ddt %>%
+                group_by(SPECIES) %>%
+                summarize(
+                  Count = n(),
+                )
+pie_chart_labels <- summary_table$SPECIES
+pie_chart_colors <- c("red", "green", "blue", "purple")
+pie(summary_table$Count, labels = pie_chart_labels, col = pie_chart_colors)
+legend("topright", legend = pie_chart_labels, fill = pie_chart_colors)
+```
+
+Make a pie chart of RIVERS
+```{r}
+library(dplyr)
+summary_table <- ddt %>%
+                group_by(RIVER) %>%
+                summarize(
+                  Count = n(),
+                )
+pie_chart_labels <- summary_table$RIVER
+pie_chart_colors <- c("red", "green", "blue", "purple")
+pie(summary_table$Count, labels = pie_chart_labels, col = pie_chart_colors)
+legend("topright", legend = pie_chart_labels, fill = pie_chart_colors)
+```
+
+## Task 7
+
+Make a boxplot of the variable DDT
+```{r}
+boxplot(ddt$DDT, main="DDT Boxplot", ylab="DDT")
+```
+
+Make a boxplot of the variable WEIGHT
+```{r}
+boxplot(ddt$WEIGHT, main="WEIGHT Boxplot", ylab="Fish weight")
+```
+
+Make a boxplot of the variable LENGTH
+```{r}
+boxplot(ddt$LENGTH, main="LENGTH Boxplot", ylab="Fish length")
+```
+
+## Task 8 
+
+Make a coplot of LENGTH Vs WEIGHT given RIVER
+```{r}
+coplot(LENGTH ~ WEIGHT | RIVER, data = ddt)
+```
+
+Make a coplot of DDT Vs WEIGHT given SPECIES
+```{r}
+coplot(DDT ~ WEIGHT | SPECIES, data = ddt)
+```
+
+## Task 9
+Make sure all code is placed in with your answers!
+Use ggplot and make the following boxplots (be sure to put your name on the title using ggtitle())
+
+```{r}
+ggplot(ddt, aes(x = SPECIES, y = WEIGHT, fill = RIVER)) + geom_boxplot() + ggtitle("Daniel Yowell's Task 9 Boxplot")
+```
+
+Use ggplot and make the following violin plots (name on the title)
+
+```{r}
+ggplot(ddt, aes(x = RIVER, y = LENGTH, fill = SPECIES)) +
+  geom_violin() + theme_minimal() + ggtitle("Daniel Yowell's Task 9 Violin Plot")
+```
+
+Use ggplot and make the following scatter plots (name on the title)
+
+```{r}
+ggplot(ddt, aes(x = WEIGHT, y = LENGTH, col = SPECIES)) +
+  geom_point() + theme_minimal() + ggtitle("Daniel Yowell's Task 9 Scatter Plot")
+```

@@ -1,0 +1,139 @@
+---
+title: "testing1"
+author: "Daniel Yowell"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# This is a testing document.
+# It contains experiments, explanations of R commands, and answers to previous quizzes.
+
+# Cool R Facts
+
+Did you know? You can pass a data frame into the curly brackets to save some time.
+(skips read.csv() function)
+```{r ddt}
+getwd()
+summary(ddt)
+```
+
+## Task 2.5
+## to be deleted
+
+```{r ddt}
+column <- ddt$SPECIES
+unique_count <- length(unique(column))
+unique_count
+```
+
+# QUIZ 1: SQUARE BRACKETEERING
+
+1. In the ddt data frame find the entry in the first row and second column. 
+```{r ddt}
+head(ddt)
+```
+
+2. Find the amount of DDT in the flesh of the fish which has the longest length. Hint which.max() might help
+```{r ddt}
+ddt[which.max(ddt$LENGTH),"DDT"]
+```
+
+3. How many fish have a length > 49 and < 50? Hint: Use an "&"
+```{r ddt}
+ddt[ddt$LENGTH > 49  & ddt$LENGTH < 50,]
+```
+
+4. How many fish have a length > 49 and weight < 1200?
+```{r ddt}
+ddt[ddt$LENGTH > 49  & ddt$WEIGHT < 1200,]
+```
+
+# QUIZ 2: WRANGLED UP IN KNOTS
+
+1. Find the mean WEIGHT of SMBUFFALO fish to 4 decimal places
+```{r ddt}
+ddt %>% filter(SPECIES == "SMBUFFALO") %>% summarize(n = mean(WEIGHT))
+```
+
+2. Find the mean LENGTH of CCATFISH which have DDT > 33 to 2 decimal places
+```{r ddt}
+ddt %>% filter(DDT > 33 & SPECIES == "CCATFISH") %>% summarize(n = mean(LENGTH))
+```
+
+3. Find the standard deviation of DDT for fish that are either  LMBASS  or SMBUFFALO to 4 decimal places
+```{r ddt}
+# METHOD 1: Wrangler
+ddt %>% filter(SPECIES == "LMBASS" | SPECIES == "SMBUFFALO" ) %>% summarize(sd_DDT = sd(DDT))
+# METHOD 2: Classic
+sd(with(ddt, ddt[SPECIES == "LMBASS" | SPECIES == "SMBUFFALO",]$DDT))
+```
+
+4. Find the number of fish that have a LENGTH > 40  and WEIGHT > 1000
+```{r ddt}
+# Method 1 - WRANGLER APPROACH
+# 1. pass ddt into filter function
+# 2. in filter function, sort by LENGTH > 40 and WEIGHT > 1000
+# 3. finally, summarize(). the n() function counts the number of rows, 
+#    assigning it to a new column n.
+# 4. optionally, you can print n to the console with the code `n`
+ddt %>% filter(LENGTH > 40 & WEIGHT > 1000) %>% summarize(n = n())
+# Method 2 - SQUARE BRACKET APPROACH
+# 1. we want the output of a length() function
+# 2. with() is kinda clunky, but basically the first parameter specifies
+#    the intended data frame so that we don't have to recite it later
+# 3. ddt[...] searches ddt for the given parameters
+# 4. '1' selects the first column of data (any column works since we just
+#    care to recognize a given row's existence)
+# - Passing the with() string into length() gives us the size of the vector
+length(with(ddt, ddt[LENGTH > 40 & WEIGHT > 1000, 1]))
+```
+
+# QUIZ 3:
+
+1. Find the mean LENGTH to 4 decimal places.
+```{r ddt}
+mean(ddt$LENGTH)
+```
+
+2. Find the standard deviation of WEIGHT to 4 decimal places.
+```{r ddt}
+sd(ddt$WEIGHT)
+```
+
+How many fish are longer than 50?
+```{r ddt}
+ddt %>% filter(LENGTH > 50) %>% summarize(n = n())
+```
+
+How many SMBUFFALO fish are longer than 50?
+```{r ddt}
+ddt %>% filter(LENGTH > 50 & SPECIES == "SMBUFFALO") %>% summarize(n = n())
+```
+```{r ddt}
+ddt %>% filter(LENGTH > 50 & SPECIES == "SMBUFFALO")
+```
+# QUIZ 3
+
+z_i is the number of standard deviations that x_i is away from the sample mean.
+
+[TRUE]
+
+Using z, find the value of the WEIGHT of fish that is defined as an outlier
+
+```{r ddt}
+x <- ddt$WEIGHT
+z=(x-mean(x))/sd(x)
+ddt$WEIGHT[abs(z)>3]
+```
+
+
+Using the same data set (DDT.csv) find all values of WEIGHT that are possible outliers.
+
+Of these possible outliers write down the smallest!
+
+```{r ddt}
+ddt$WEIGHT[abs(z)>=2 & abs(z)<=3]
+```

@@ -1,0 +1,11 @@
+Package: FALL224753yowe0004
+Type: Package
+Title: MATH 4753 functions
+Version: 0.1.0
+Author: Daniel Yowell
+Maintainer: Daniel Yowell <danielyowell@ou.edu>
+Description: Lab functions
+    For class usage
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
