@@ -3,11 +3,13 @@
 #' @param d sample
 #' @param alpha level of confidence
 #'
+#' @importFrom stats qt
+#' @importFrom stats sd
+#'
 #' @return CI of mean
 #' @export
 #'
-#' @examples
-mycltu=function(d, alpha){
+myci=function(d, alpha){
   n = length(d)
   samplemean = mean(d)
   samplesd = sd(d)
@@ -15,6 +17,11 @@ mycltu=function(d, alpha){
   # CI = 0.95
   alpha = 0.05
   t <- qt(1-alpha/2, n-1 ) # t multiplier
-  samplemean - (t * samplesd / sqrt(n))
-  samplemean + (t * samplesd / sqrt(n))
+  lower = samplemean - (t * samplesd / sqrt(n))
+  upper = samplemean + (t * samplesd / sqrt(n))
+  list(
+      lower = lower,
+      upper = upper
+     )
+
 }

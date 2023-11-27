@@ -1,0 +1,51 @@
+---
+title: "my-vignette"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{my-vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(FALL224753yowe0004)
+```
+
+This my mycltu, which returns a histogram of the central limit for a given uniform distribution.
+
+```{r}
+FALL224753yowe0004::mycltu(n=20,iter=100000)
+```
+
+This is ntickets, the function we worked on for Project 1. Here is a demonstration of the scenario with 200 total seats, a 0.02 chance of overbooking, and a 0.95 probability for each passenger showing:
+
+```{r}
+FALL224753yowe0004::ntickets(200, 0.02, 0.95)
+```
+
+This is the maximum likelihood function we created in Lab 10. We still need to manually create the log function before passing it as a parameter, but otherwise it works exactly as intended.
+
+```{r}
+logbin=function(x,param) log(dbinom(x,prob=param,size=10))
+FALL224753yowe0004::mymaxlik(x = c(1, 2, 3, 4, 5, 6, 7, 8),
+                             param = seq(0,1,length=1000),
+                             lfun = logbin,
+                             xlab = expression(pi),
+                             main = "Binomial",
+                             cex.main = 1
+                             )
+```
+
+This is how to create a confidence interval using myci(). To demonstrate, we'll use the fire data set included with our package.
+
+```{r}
+fire <- FALL224753yowe0004::fire
+FALL224753yowe0004::myci(d = fire$DISTANCE, alpha = 0.05)
+```
